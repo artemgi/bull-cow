@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class MainController {
@@ -37,10 +38,8 @@ public class MainController {
         model.addAttribute("games", games);
         //парсинг игр всех пользователей
         List<Games> allGames = gamesService.findAll();
-        //Создание списка польсзователей с сумой ходов
-        Map<String, Double> stepUser = new HashMap<String, Double>();
+        Map<String, Double> stepUser = new HashMap<>();
         Map<String, Integer> amountGame = new HashMap<String, Integer>();
-
         for (Games rating : allGames) {
             if(stepUser.containsKey(rating.getUser().getUsername())){
                 stepUser.put(rating.getUser().getUsername(),stepUser.get(rating.getUser().getUsername())+rating.getScore());
@@ -57,8 +56,19 @@ public class MainController {
             entry.setValue(entry.getValue()/amountGame.get(key));
         }
 
+        //Сортировка по значению
+        stepUser = stepUser.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors
+                        .toMap(Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new));
+
         model.addAttribute("rating", stepUser);
 
+        //Имя пользователя
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());
         model.addAttribute("user", user);

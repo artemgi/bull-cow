@@ -14,10 +14,10 @@ let move=0;
 
 
 function game() {
-    let playersNumber1 = document.querySelector('#player1').value;
-    let playersNumber2 = document.querySelector('#player2').value;
-    let playersNumber3 = document.querySelector('#player3').value;
-    let playersNumber4 = document.querySelector('#player4').value;
+    let playersNumber1 = Number(document.querySelector('#player1').value);
+    let playersNumber2 = Number(document.querySelector('#player2').value);
+    let playersNumber3 = Number(document.querySelector('#player3').value);
+    let playersNumber4 = Number(document.querySelector('#player4').value);
 
     let number=[];
     number.push(playersNumber1);
